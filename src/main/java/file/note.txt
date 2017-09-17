@@ -1,0 +1,25 @@
+#1. HttpServletRequest, HttpServletResponse
+    response.setContentType("text/html;charset=UTF-8"); 目的是为了控制浏览器的行为, 即控制浏览器用UTF-8进行解码;
+    response.setCharacterEncoding("UTF-8"); 的目的是用于response.getWriter()输出的字符流的乱码问题,
+    如果是response.getOutputStream()是不需要此种解决方案的;因为这句话的意思是为了将response对象中的数据以UTF-8解码后发向浏览器;
+
+
+#2. JPush
+    广播推送有十分钟缓存策略：10:00推送了一条消息，10:03 才有第一台设备注册，10:05分再次推送消息，目标取的是10点推送消息时的查询缓存，所以会依旧报错1011，到10:10后推送时，才会成功
+
+
+#3. JPush Error
+
+    {}
+    	at cn.jiguang.common.connection.NativeHttpClient._doRequest(NativeHttpClient.java:234)
+    	at cn.jiguang.common.connection.NativeHttpClient.doRequest(NativeHttpClient.java:99)
+    	at cn.jiguang.common.connection.NativeHttpClient.sendPost(NativeHttpClient.java:86)
+    	at cn.jpush.api.push.PushClient.sendPush(PushClient.java:161)
+    	at cn.jpush.api.JPushClient.sendPush(JPushClient.java:189)
+    	at jpush.JpushClient.sendToAllAndroid(JpushClient.java:71)
+    	at job.AppPushMsgJob.execute(AppPushMsgJob.java:21)
+    	at org.quartz.core.JobRunShell.run(JobRunShell.java:207)
+    	at org.quartz.simpl.SimpleThreadPool$WorkerThread.run(SimpleThreadPool.java:560)
+
+    发现是 sendToAllAndroid 的时候报的错, 查了很多资料, 原来是 当前的appKey[eee7286d55479b61b58e24e6] 没有做 android SDK 集成.
+
